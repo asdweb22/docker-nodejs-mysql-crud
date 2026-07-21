@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  mysql-db:
+    image: mysql:8.4
+
+    container_name: mysql-container
+
+    restart: always
+
+    env_file:
+      - .env
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  node-app:
+    build: .
+
+    container_name: student-node-app-container
+
+    restart: always
+
+    depends_on:
+      - mysql-db
+
+    env_file:
+      - .env
+
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql-data:
